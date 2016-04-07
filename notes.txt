@@ -1,0 +1,43 @@
+data based on IEEE RTS 1999 are in IEEE RTS 1999 case 1 data.xlsx. Simpler data for a 3-bus system are in 3bus.xlsx. Blocks of data from these should be copied and pasted into various input files. A full set of inputs looks like this:
+
+- various directly written text files
+    - copied from inputs/standard
+- text files from Excel spreadsheet of IEEE RTS:
+    + generator_info.tab (extended to include Q_max and Q_min)
+    + project_info.tab (extended to identify which bus it's connected to)
+    + proj_existing_builds.tab
+    + loads.tab
+    + timepoints.tab
+    + buses.tab
+    + bus_loads.tab (timepoint, baseline real load, baseline reactive load)
+    + branches.tab (ID, from_bus, to_bus, impedance properties)
+    + hydro.tab (daily max energy production)
+
+The full model and 3-bus version ran successfully with a version of Pyomo that was probably installed 7/15/15 (probably 4.1.something). With Pyomo 4.1.10486 in April 2016 (which may be the same verison as used previously), the full model now seems to get stuck with overloads during contingencies and the 3-bus version reports cryptic errors.
+TODO: resolve these problems and get it converging again
+
+In principle, this needs only the master switch branch (switch_mod directory), but with Pyomo 4.1.10555 - 4.2.11238 (and possibly later) it will also need to load switch_hawaii.switch_patch in order to patch the Expression.construct code to allow reconstruction (this problem is discussed in Pyomo ticket https://software.sandia.gov/trac/pyomo/ticket/4633)
+
+TODO: create hydro module
+- constrain energy from hydro projects (only)
+
+TODO: rescale reactive power on each bus that has demand response for a reactive load (not applicable for now)
+
+TODO: create demand response module (maybe a separate project)
+Then do iterative solution between switch and DW demand-response system
+- for multiple charging windows per EV: manage its own pyomo model, in which each EV tries to minimize cost
+    - use circular indexing, respect max charging rate and level
+- for single charging windows, it may be possible to use numpy magic to rank hours for each EV and spread them according to max charging rate (prioritize early charging)
+    - keep a list of max charging rate during each hour for each EV
+    - sort hours by price
+    - for each EV, take the cumulative sum of max charging rate along sorted hour list
+    - set ending level to min(cumulative_sum, charge_needed_for_day)
+    - calculate charging rate in each hour as running difference along sorted hour list
+
+# TODO:
+use part-load heat rates and reserve requirements
+add ramp up/down limits for each gen
+add startup cost for each gen
+penalty for unserved load (maybe less severe than penalty for overloaded lines?)
+use one-minute timepoints to model ramp rate limits?
+commitment and energy decisions are made by time-of-day within each period, shared across timeseries; then additional energy dispatch in each timeseries is constrained by this (sort of like a build variable?); individual timeseries don't need reserves, just simple dispatch (feasible, not even optimal) 
