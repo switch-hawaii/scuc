@@ -1,0 +1,10 @@
+Icon?
+outputs*/
+scenario_queue*/
+switch_mod
+switch_hawaii
+switch
+.*
+!.gitignore
+~$*
+*.pyc

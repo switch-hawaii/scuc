@@ -1,0 +1,5 @@
+load_zone	fuel	period	fuel_cost
+A	residual	2015	7.544
+A	distillate	2015	9.84
+A	coal	2015	3.936
+A	nuclear	2015	1.968

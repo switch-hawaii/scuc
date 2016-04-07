@@ -1,0 +1,4 @@
+BUS	bus_load_zone	bus_v_setpoint_pu	bus_type	bus_g_mw	bus_b_mvar	bus_area	bus_base_kv	bus_loss_zone	bus_v_max_pu	bus_v_min_pu
+1	A	1.035	3	0	0	11	138	1	1.05	0.95
+2	A	1.035	2	0	0	11	138	2	1.05	0.95
+3	A	.	1	0	0	11	138	1	1.05	0.95

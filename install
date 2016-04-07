@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# note: this could work with the master switch branch (or at least scenario_solver),
+# except that it uses switch_hawaii.switch_patch to patch pyomo's Expression object
+# to allow reconstruction.
+
+echo "Retrieving SWITCH repository from https://github.com/switch-model/switch.git"
+git clone https://github.com/switch-model/switch.git
+cd switch
+git checkout hawaii
+cd ..
+ln -s switch/switch_mod .
+ln -s switch/switch_hawaii .
+
+echo "SWITCH has been installed; working on branch 'hawaii'."
+echo "use 'python -m switch_mod.solve' to solve the current study"
+echo "or 'python -m switch_mod.solve --help' for help."

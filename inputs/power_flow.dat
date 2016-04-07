@@ -1,0 +1,2 @@
+param base_mva := 100;
+param branch_limit_violation_penalty := 10000;

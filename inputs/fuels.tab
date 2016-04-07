@@ -1,0 +1,5 @@
+fuel	co2_intensity	upstream_co2_intensity
+distillate	0.0732	0.0
+residual	0.0788	0.0
+coal	0.0953	0.0
+nuclear 0.0 0.0

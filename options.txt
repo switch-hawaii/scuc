@@ -1,0 +1,9 @@
+--verbose 
+#--stream-solver
+#--max-iter=100
+--solver=cplex --solver-io=nl 
+--solver-options-string="mipgap=0.001 display=1 primalopt='' iisfind=1"
+--suffixes iis 
+#--inputs-dir inputs
+--inputs-dir inputs_3bus
+--scenario-name 3bus

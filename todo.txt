@@ -1,0 +1,59 @@
+create tab files for switch and a nodal module
++ various easy files
+- files from Excel spreadsheet of IEEE RTS:
+    + generator_info.tab (extend to include Q_max and Q_min)
+    + project_info.tab (extend to identify which bus it's connected to)
+    + proj_existing_builds.tab
+    + loads.tab (set to zero, then add demand components based on bus loads and branch losses)
+    + timepoints.tab
+    + buses.tab (ID, load_zone, V setpoint for gens (if any))
+    + bus_loads.tab (timepoint, baseline real load, baseline reactive load)
+    + branches.tab (ID, from_bus, to_bus, impedance properties)
+    + hydro.tab (daily max energy production)
+
+create hydro module
+- constrain energy from hydro projects (only)
+
+- projects (each gen at each bus, record bus id)
+- PTDFs for each bus for a list of (congested line, contingency) pairs (returned by powerflow module)
+- nodal module aggregates load to zones? or creates its own load balance constraint?
+- bus and branch data
+- read bus load and reactive power data (and attach to switch)
+
+create trans_branch_flow module
+
+create powerflow module
+- read bus and branch data from switch
+- add total bus load and a loss calculation as demand components
++ rescale reactive power on each bus that has demand response for a reactive load (not applicable for now)
+- read project output from switch
+- run power flow analysis for base case and contingencies
+- report line usage and losses for current case back to switch
+- append aggregated loss factors for power injections at each bus (loss sensitivities) to switch for all buses
+- append PTDFs to switch for any congested lines in any contingencies
+
+create demand response module
+- for multiple charging windows per EV: manage its own pyomo model, in which each EV tries to minimize cost
+    - use circular indexing, respect max charging rate and level
+- for single charging windows, it may be possible to use numpy magic to rank hours for each EV and spread them according to max charging rate (prioritize early charging)
+    - keep a list of max charging rate during each hour for each EV
+    - sort hours by price
+    - for each EV, take the cumulative sum of max charging rate along sorted hour list
+    - set ending level to min(cumulative_sum, charge_needed_for_day)
+    - calculate charging rate in each hour as running difference along sorted hour list
+
+
+add existing projects and zones/nodes corresponding to IEEE RTS (maybe just write the data files directly)
+one period (no new projects)
+one timeseries for each outage scenario
+-- do we also represent the base scenario?
+timepoints (how many? seems to be one per minute, since ramp rate limits are given in MW/min)
+add ramp up/down limits for each gen
+add startup cost for each gen
+penalty for unserved load
+commitment and energy decisions are made by time-of-day within each period, shared across timeseries; then additional energy dispatch in each timeseries is constrained by this (sort of like a build variable?); individual timeseries don't need reserves, just simple dispatch (feasible, not even optimal) 
+generators
+dc power flow (choose phase angle and constrain transmission power flows to match DC flow)
+demand system bids in loads, reserves and WTP
+
+Then do iterative solution between switch and DW demand-response system
